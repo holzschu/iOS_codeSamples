@@ -29,6 +29,14 @@ The big difference is the `-DHAVE_CONFIG_H` which tells the compiler to look for
 
 ## Sample code
 
+The directory `sampleCode` contains some simple projects you can compile:
+- `hello.c` just experiments with input and output methods.
+- `pwd.c` is the BSD implementation of the shell command `pwd`. It prints the current working directory.
+- `bsd_find` contains the Free BSD implementation of the shell command `find`, with minor edits (see `fork`, below), 
+- `bsd_diff` contains the Free BSD implementation of the shell command `diff`. It is a good command to test the difference between JIT and interpreter.
+
+Additionally, [tree](https://github.com/nodakai/tree-command.git) works with no modifications, except you have to link it with `libc_replacement/qsort.c` (see below, "Function replacement"). 
+
 ## iOS "forbidden" functions 
 
 Some functions (`fork()`, `system()`...) are not available in iOS due to sandbox restrictions. Some are intercepted at compile time, others at run time. For the functions intercepted at run time, they are implemented as external functions in `lli.cpp`. If I forgot one, tell me and I'll add it.
@@ -71,11 +79,9 @@ And here is the modified version:
 	return (0);
 ```
 
-## Function replacement:
+## Function replacement
 
-The LLVM interpreter (lli) calls external functions using libFFI. For some reason, external functions that operate on pointers (qsort, bsearch) cause the interpreter to crash. 
+The LLVM interpreter (lli) calls external functions using libFFI. For some reason, external functions that operate on pointers (`qsort`, `bsearch`) cause the interpreter to crash. 
 
-In the directory `libc_replacement`, we provide the source files for theses functions. If your code uses one of these functions, compile the relevant source file and link with it. 
+The directory `libc_replacement` contains source files for these functions. If your code uses one of these functions, compile the relevant source file and link with it. For now, there is `qsort` and `bsearch`. It will expand as more problematic functions are discovered.
 
-https://opensource.apple.com/source/xnu/xnu-344/bsd/kern/qsort.c
-Repository of sample source code for LLVM on iOS / compiled locally
