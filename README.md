@@ -12,7 +12,7 @@ This repository is a companion for [LLVM for iOS](https://github.com/holzschu/ll
 
 To compile a project:
 - for each source file, `clang --config ~/clang.cfg source.c`. This will produce `source.ll`
-- assemble the compiled sources with: `llvm-link -only-needed -o=executable.bc *.ll` This will produce the linked file.
+- assemble the compiled sources with: `llvm-link -o=executable.bc *.ll` This will produce the linked file.
 - to start the program, use `lli executable.bc <flags to the main program>` 
 
 ## Configuration files
