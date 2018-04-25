@@ -8,9 +8,26 @@
 
 This repository is a companion for [LLVM for iOS](https://github.com/holzschu/llvm). It contains config files, sample code that compiles and runs on iOS, scripts, tips and tricks to make things work. 
 
-## Compilation / configuration files
+## Compilation 
 
+To compile a project:
+- for each source file, `clang --config ~/clang.cfg source.c`. This will produce `source.ll`
+- assemble the compiled sources with: `llvm-link -only-needed -o=executable.bc *.ll` This will produce the linked file.
+- to start the program, use `lli executable.bc <flags to the main program>` 
 
+## Configuration files
+
+There are 2 configuration files in this repository: `clang.cfg` and `gnu.cfg`. The former is for standard projects:
+```
+ -S -emit-llvm -I ~/lib/clang/7.0.0/include -I ~/usr/include -Wno-nullability-completeness  -D_FORTIFY_SOURCE=0
+```
+The latter is for complex projects, using `configure`:
+```
+ -S -emit-llvm -I ../lib -I .. -I ../src -I ~/usr/include -I ~/lib/clang/7.0.0/include -Wno-nullability-completeness -DHAVE_CONFIG_H -D_FORTIFY_SOURCE=0 
+```
+The big difference is the `-DHAVE_CONFIG_H` which tells the compiler to look for a `config.h` file, which you have to create: `cp config.hin config.h` and edit the `config.h` file.
+
+## Sample code
 
 ## iOS "forbidden" functions 
 
