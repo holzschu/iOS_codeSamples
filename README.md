@@ -19,13 +19,15 @@ To compile a project:
 
 There are 2 configuration files in this repository: `clang.cfg` and `gnu.cfg`. The former is for standard projects:
 ```
- -S -emit-llvm -I ~/lib/clang/7.0.0/include -I ~/usr/include -Wno-nullability-completeness  -D_FORTIFY_SOURCE=0
+ -S -emit-llvm -I ~/lib/clang/7.0.0/include -isysroot ~ -Wno-nullability-completeness  -D_FORTIFY_SOURCE=0
 ```
 The latter is for complex projects, using `configure`:
 ```
- -S -emit-llvm -I ../lib -I .. -I ../src -I ~/usr/include -I ~/lib/clang/7.0.0/include -Wno-nullability-completeness -DHAVE_CONFIG_H -D_FORTIFY_SOURCE=0 
+ -S -emit-llvm -I ../lib -I .. -I ../src -isysroot ~ -I ~/lib/clang/7.0.0/include -Wno-nullability-completeness -DHAVE_CONFIG_H -D_FORTIFY_SOURCE=0 
 ```
 The big difference is the `-DHAVE_CONFIG_H` which tells the compiler to look for a `config.h` file, which you have to create: `cp config.hin config.h` and edit the `config.h` file.
+
+(`-isysroot ~` has the same effect as `-I ~/usr/include`, but it will also work when compiling Objective-C).
 
 ## Sample code
 
