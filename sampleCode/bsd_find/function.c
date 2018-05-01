@@ -658,33 +658,38 @@ doexec:	if ((plan->flags & F_NEEDOK) && !queryuser(plan->e_argv))
 	fflush(stdout);
 	fflush(stderr);
 
+    char* pushDirectory = NULL;
+    pushDirectory = getcwd(pushDirectory, MAXPATHLEN);
 	switch (pid = fork()) {
 	case -1:
 		err(1, "fork");
 		/* NOTREACHED */
 	case 0: {
+		// "child" process:
 		/* change dir back from where we started */
-		char* pushDirectory = NULL;
-		pushDirectory = getcwd(pushDirectory, MAXPATHLEN);
 		if (!(plan->flags & F_EXECDIR) &&
 		    !(ftsoptions & FTS_NOCHDIR) && fchdir(dotfd)) {
 			warn("chdir");
 			_exit(1);
 		}
 		execvp(plan->e_argv[0], plan->e_argv);
+		// execvp doesn't exit, and shouldn't. So remove warning.
 		/* warn("%s", plan->e_argv[0]);
 		_exit(1); */
-		chdir(pushDirectory);
-		free(pushDirectory);
 			}
 	}
+	// End of "child" process. Back to "parent":
+	// Don't change directory until "child" process is finished:
+    pid = waitpid(pid, &status, 0);
+    // Back to where we were before fork:
+    chdir(pushDirectory);
+    free(pushDirectory);
 	if (plan->flags & F_EXECPLUS) {
 		while (--plan->e_ppos >= plan->e_pbnum)
 			free(plan->e_argv[plan->e_ppos]);
 		plan->e_ppos = plan->e_pbnum;
 		plan->e_psize = plan->e_pbsize;
 	}
-	pid = waitpid(pid, &status, 0);
 	if (pid != -1 && WIFEXITED(status) && !WEXITSTATUS(status))
 		return (1);
 	if (plan->flags & F_EXECPLUS) {
