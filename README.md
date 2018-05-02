@@ -87,3 +87,8 @@ The LLVM interpreter (lli) calls external functions using libFFI. For some reaso
 
 The directory `libc_replacement` contains source files for these functions. If your code uses one of these functions, compile the relevant source file and link with it. For now, there is `qsort` and `bsearch`. It will expand as more problematic functions are discovered.
 
+## How to install scripts from the scripts folder
+
+1. Copy the script you want to install from the Scripts folder into ~
+2. tar -xvzf {the file you just copied}
+3. Check if the script got installed by opening the Scripts view controller
